@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'capybara'
+
 month = ARGV[0].to_i
 days_in_month = [nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 wd = [/Mon/, /Tue/, /Wed/, /Thu/, /Fri/, /Sat/, /Sun/]
@@ -14,4 +16,18 @@ end
 
 7.times { str.gsub! wd[_1], wd_jp[_1] }
 
-puts str
+Capybara.threadsafe = true
+
+session = Capybara::Session.new(:selenium_chrome_headless) do |config|
+  config.run_server = false
+  config.app_host = 'https://chouseisan.com/schedule/newEvent/create'
+end
+session.visit '/'
+session.fill_in 'name', with: "#{month}月"
+session.fill_in 'kouho', with: str
+session.find_button('createBtn').click
+sleep 3
+
+event_page = session.find_field('listUrl').value
+
+p event_page
