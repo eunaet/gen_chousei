@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'capybara'
+require_relative 'send_message_to_discord'
 
 month = ARGV[0].to_i
 days_in_month = [nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -31,3 +32,5 @@ sleep 3
 event_page = session.find_field('listUrl').value
 
 p event_page
+
+SendMessageToDiscord.new(event_page).notify
