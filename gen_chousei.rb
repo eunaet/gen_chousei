@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'capybara'
+require 'webdrivers/chromedriver'
 require_relative 'send_message_to_discord'
 
 now = Time.now
@@ -19,6 +20,8 @@ end
 7.times { str.gsub! wd[_1], wd_jp[_1] }
 
 Capybara.threadsafe = true
+
+Selenium::WebDriver::Chrome.path = ENV["CHROME_INSTALL_DIR"] if ENV["CHROME_INSTALL_DIR"]
 
 session = Capybara::Session.new(:selenium_chrome_headless) do |config|
   config.run_server = false
