@@ -21,8 +21,6 @@ end
 
 Capybara.threadsafe = true
 
-Selenium::WebDriver::Chrome.path = ENV["CHROME_INSTALL_DIR"] if ENV["CHROME_INSTALL_DIR"]
-
 session = Capybara::Session.new(:selenium_chrome_headless) do |config|
   config.run_server = false
   config.app_host = 'https://chouseisan.com/schedule/newEvent/create'
