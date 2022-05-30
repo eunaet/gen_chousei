@@ -5,13 +5,15 @@ require 'json'
 class SendMessageToDiscord
   def initialize(content)
     @content = content
+    @token = token
+    @channel_id = channel_id
   end
 
   def notify
-    url = URI.parse("https://discord.com/api/v10/channels/#{channel_id}/messages")
+    url = URI.parse("https://discord.com/api/v10/channels/#{@channel_id}/messages")
     req = Net::HTTP::Post.new(url.path)
-    req["Authorization"] = "Bot #{token}"
-    req["Content-Type"] = "application/json"
+    req['Authorization'] = "Bot #{@token}"
+    req['Content-Type'] = 'application/json'
     req.body = message_body
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
@@ -23,18 +25,32 @@ class SendMessageToDiscord
   end
 
   def credentials
-    @credentials ||= YAML.load(File.read("credentials.yml"))["credentials"]
+    @credentials ||= credentials_yaml
+  end
+
+  def credentials_yaml
+    YAML.load(File.read('credentials.yml'))['credentials']
+  rescue StandardError
+    nil
   end
 
   def channel_id
-    @channel_id ||= credentials["channel_id"]
+    if credentials
+      credentials['channel_id']
+    else
+      ENV['DISCORD_CHANNEL_ID']
+    end
   end
 
   def token
-    @token ||= credentials["token"]
+    if credentials
+      credentials['token']
+    else
+      ENV['DISCORD_TOKEN']
+    end
   end
 
   def message_body
-    JSON.generate({content: @content})
+    JSON.generate({ content: @content })
   end
 end
