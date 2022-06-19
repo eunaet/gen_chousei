@@ -13,7 +13,7 @@ str = ''
 time = Time.new(now.year, month, 1, 0, 0, 0, '+09:00')
 
 (1..days_in_month[month]).each do |_day|
-  str += "#{time.strftime('%-m/%-d (%a)')} 21:00 ~ \n"
+  str += "#{time.strftime('%-m/%-d (%a)')}\n"
   time += 60 * 60 * 24
 end
 
