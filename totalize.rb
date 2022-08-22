@@ -2,9 +2,7 @@ require_relative 'init_session'
 require_relative 'send_message_to_discord'
 
 MINIMUM_ANSWER = 6
-NOT_ENOUGH = "回答が3人未満です"
-
-
+NOT_ENOUGH = '回答が3人未満です'
 
 # td[0]:日程
 # td[1..3]:○△✕
@@ -28,6 +26,7 @@ end
 
 def result_text(results)
   return NOT_ENOUGH if results.empty?
+
   rank(results)
 end
 
