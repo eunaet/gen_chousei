@@ -1,16 +1,10 @@
-require 'capybara'
-require 'webdrivers/chromedriver'
+require_relative 'init_session'
 require_relative 'send_message_to_discord'
 
 MINIMUM_ANSWER = 6
 NOT_ENOUGH = "回答が3人未満です"
 
-Capybara.threadsafe = true
 
-session = Capybara::Session.new(:selenium_chrome_headless) do |config|
-  config.run_server = false
-  config.app_host = 'https://chouseisan.com'
-end
 
 # td[0]:日程
 # td[1..3]:○△✕
@@ -47,4 +41,4 @@ def rank(results)
   end
 end
 
-SendMessageToDiscord.new(result_text(visit_page(session, ARGV[0]))).notify
+SendMessageToDiscord.new(result_text(visit_page(init_session, ARGV[0]))).notify

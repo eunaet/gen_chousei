@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'capybara'
-require 'webdrivers/chromedriver'
+require_relative 'init_session'
 require_relative 'send_message_to_discord'
 
 now = Time.now
@@ -19,20 +18,13 @@ end
 
 7.times { str.gsub! wd[_1], wd_jp[_1] }
 
-Capybara.threadsafe = true
-
-session = Capybara::Session.new(:selenium_chrome_headless) do |config|
-  config.run_server = false
-  config.app_host = 'https://chouseisan.com/schedule/newEvent/create'
-end
-session.visit '/'
+session = init_session
+session.visit '/schedule/newEvent/create'
 session.fill_in 'name', with: "#{month}月"
 session.fill_in 'kouho', with: str
 session.find_button('createBtn').click
 sleep 3
 
 event_page = session.find_field('listUrl').value
-
-p event_page
 
 SendMessageToDiscord.new(event_page).notify
